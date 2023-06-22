@@ -10,9 +10,8 @@
 
 #include "PluginEditor.h"
 
-
 //==============================================================================
-TestpluginAudioProcessor::TestpluginAudioProcessor()
+SimpleEQAudioProcessor::SimpleEQAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
     : AudioProcessor(
           BusesProperties()
@@ -27,14 +26,16 @@ TestpluginAudioProcessor::TestpluginAudioProcessor()
 {
 }
 
-TestpluginAudioProcessor::~TestpluginAudioProcessor() {}
+SimpleEQAudioProcessor::~SimpleEQAudioProcessor() {}
 
 //==============================================================================
-const juce::String TestpluginAudioProcessor::getName() const {
+const juce::String SimpleEQAudioProcessor::getName() const
+{
   return JucePlugin_Name;
 }
 
-bool TestpluginAudioProcessor::acceptsMidi() const {
+bool SimpleEQAudioProcessor::acceptsMidi() const
+{
 #if JucePlugin_WantsMidiInput
   return true;
 #else
@@ -42,7 +43,8 @@ bool TestpluginAudioProcessor::acceptsMidi() const {
 #endif
 }
 
-bool TestpluginAudioProcessor::producesMidi() const {
+bool SimpleEQAudioProcessor::producesMidi() const
+{
 #if JucePlugin_ProducesMidiOutput
   return true;
 #else
@@ -50,7 +52,8 @@ bool TestpluginAudioProcessor::producesMidi() const {
 #endif
 }
 
-bool TestpluginAudioProcessor::isMidiEffect() const {
+bool SimpleEQAudioProcessor::isMidiEffect() const
+{
 #if JucePlugin_IsMidiEffect
   return true;
 #else
@@ -58,40 +61,45 @@ bool TestpluginAudioProcessor::isMidiEffect() const {
 #endif
 }
 
-double TestpluginAudioProcessor::getTailLengthSeconds() const { return 0.0; }
+double SimpleEQAudioProcessor::getTailLengthSeconds() const { return 0.0; }
 
-int TestpluginAudioProcessor::getNumPrograms() {
-  return 1;  // NB: some hosts don't cope very well if you tell them there are 0
-             // programs, so this should be at least 1, even if you're not
-             // really implementing programs.
+int SimpleEQAudioProcessor::getNumPrograms()
+{
+  return 1; // NB: some hosts don't cope very well if you tell them there are 0
+            // programs, so this should be at least 1, even if you're not
+            // really implementing programs.
 }
 
-int TestpluginAudioProcessor::getCurrentProgram() { return 0; }
+int SimpleEQAudioProcessor::getCurrentProgram() { return 0; }
 
-void TestpluginAudioProcessor::setCurrentProgram(int index) {}
+void SimpleEQAudioProcessor::setCurrentProgram(int index) {}
 
-const juce::String TestpluginAudioProcessor::getProgramName(int index) {
+const juce::String SimpleEQAudioProcessor::getProgramName(int index)
+{
   return {};
 }
 
-void TestpluginAudioProcessor::changeProgramName(int index,
-                                                 const juce::String &newName) {}
+void SimpleEQAudioProcessor::changeProgramName(int index,
+                                               const juce::String &newName) {}
 
 //==============================================================================
-void TestpluginAudioProcessor::prepareToPlay(double sampleRate,
-                                             int samplesPerBlock) {
+void SimpleEQAudioProcessor::prepareToPlay(double sampleRate,
+                                           int samplesPerBlock)
+{
   // Use this method as the place to do any pre-playback
   // initialisation that you need..
 }
 
-void TestpluginAudioProcessor::releaseResources() {
+void SimpleEQAudioProcessor::releaseResources()
+{
   // When playback stops, you can use this as an opportunity to free up any
   // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool TestpluginAudioProcessor::isBusesLayoutSupported(
-    const BusesLayout &layouts) const {
+bool SimpleEQAudioProcessor::isBusesLayoutSupported(
+    const BusesLayout &layouts) const
+{
 #if JucePlugin_IsMidiEffect
   juce::ignoreUnused(layouts);
   return true;
@@ -113,8 +121,9 @@ bool TestpluginAudioProcessor::isBusesLayoutSupported(
 }
 #endif
 
-void TestpluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
-                                            juce::MidiBuffer &midiMessages) {
+void SimpleEQAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
+                                          juce::MidiBuffer &midiMessages)
+{
   juce::ScopedNoDenormals noDenormals;
   auto totalNumInputChannels = getTotalNumInputChannels();
   auto totalNumOutputChannels = getTotalNumOutputChannels();
@@ -134,7 +143,8 @@ void TestpluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
   // the samples and the outer loop is handling the channels.
   // Alternatively, you can process the samples with the channels
   // interleaved by keeping the same state.
-  for (int channel = 0; channel < totalNumInputChannels; ++channel) {
+  for (int channel = 0; channel < totalNumInputChannels; ++channel)
+  {
     auto *channelData = buffer.getWritePointer(channel);
 
     // ..do something to the data...
@@ -142,31 +152,94 @@ void TestpluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
 }
 
 //==============================================================================
-bool TestpluginAudioProcessor::hasEditor() const {
-  return true;  // (change this to false if you choose to not supply an editor)
+bool SimpleEQAudioProcessor::hasEditor() const
+{
+  return true; // (change this to false if you choose to not supply an editor)
 }
 
-juce::AudioProcessorEditor *TestpluginAudioProcessor::createEditor() {
-  return new TestpluginAudioProcessorEditor(*this);
+juce::AudioProcessorEditor *SimpleEQAudioProcessor::createEditor()
+{
+  // return new SimpleEQAudioProcessorEditor(*this);
+
+  return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
-void TestpluginAudioProcessor::getStateInformation(
-    juce::MemoryBlock &destData) {
+void SimpleEQAudioProcessor::getStateInformation(
+    juce::MemoryBlock &destData)
+{
   // You should use this method to store your parameters in the memory block.
   // You could do that either as raw data, or use the XML or ValueTree classes
   // as intermediaries to make it easy to save and load complex data.
 }
 
-void TestpluginAudioProcessor::setStateInformation(const void *data,
-                                                   int sizeInBytes) {
+void SimpleEQAudioProcessor::setStateInformation(const void *data,
+                                                 int sizeInBytes)
+{
   // You should use this method to restore your parameters from this memory
   // block, whose contents will have been created by the getStateInformation()
   // call.
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout SimpleEQAudioProcessor::createParameterLayout()
+{
+  juce::AudioProcessorValueTreeState::ParameterLayout layout;
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>("Low Cut Freq",
+                                                         "Low Cut Freq",
+                                                          20.f, 
+                                                          20000.f, 
+                                                          20.f));
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>("High Cut Freq",
+                                                         "High Cut Freq",
+                                                          20.f, 
+                                                          20000.f, 
+                                                          20000.f));
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>("Peak Freq",
+                                                         "Peak Freq",
+                                                          20.f, 
+                                                          20000.f, 
+                                                          750.f));
+
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>("Peak Gain",
+                                                         "Peak Gain",
+                                                          juce::NormalisableRange<float>(-24.f, 24.f, 0.5f, 1.f),
+                                                          0.0f));
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>("Peak Q",
+                                                         "Peak Q",
+                                                          juce::NormalisableRange<float>(0.1f, 10.f, 0.5f, 1.f), 
+                                                          1.f));
+
+  juce::StringArray stringArray;
+  for (int i = 0; i < 4; i++)
+  {
+    juce::String str;
+    str << (12 + i*12);
+    str << " db/Oct";
+    stringArray.add(str);
+  }
+
+  layout.add(std::make_unique<juce::AudioParameterChoice>("LowCut Slope",
+                                                          "LowCut Slope",
+                                                          stringArray,
+                                                          0));
+
+  layout.add(std::make_unique<juce::AudioParameterChoice>("HighCut Slope",
+                                                          "HighCut Slope",
+                                                          stringArray,
+                                                          0));
+                                                          
+
+  return layout;
+}
+
 //==============================================================================
 // This creates new instances of the plugin..
-juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter() {
-  return new TestpluginAudioProcessor();
+juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter()
+{
+  return new SimpleEQAudioProcessor();
 }
